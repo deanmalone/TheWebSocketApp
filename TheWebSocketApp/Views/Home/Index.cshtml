@@ -1,0 +1,46 @@
+﻿    <div class="jumbotron">
+        <p class="lead">This is a simple ASP.NET web application for testing <b>WebSockets</b> on ASP.NET and Azure.</p>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Message Settings
+                </div>
+                <div class="panel-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="msgsize">Message content size (chars):</label>
+                            <input type="number" class="form-control" id="msgSize" min="0" max="100000">
+                        </div>
+                        <div class="form-group">
+                            <label for="freq">Message frequency (ms):</label>
+                            <input type="number" class="form-control" id="msgFreq" min="1" max="10000">
+                        </div>
+                        <input type="button" id="btnStart" class="btn btn-primary btn-md" value="Start" />
+                        <input type="button" id="btnStop" class="btn btn-info btn-md" value="Stop" />
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    WebSocket Status
+                    <p class="pull-right">
+                        <span id="status" class="label label-success">CLOSED</span>
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <p># messages sent:<span id="msgTx" class="pull-right text-muted"></span></p>
+                    <p># messages received:<span id="msgRx" class="pull-right text-muted"></span></p>
+                    <p># chars sent:<span id="charTx" class="pull-right text-muted"></span></p>
+                    <p># chars received:<span id="charRx" class="pull-right text-muted"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@section Scripts { 
+    <script type="text/javascript" src="~/Scripts/home.js"></script>
+}
