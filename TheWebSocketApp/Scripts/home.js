@@ -8,8 +8,9 @@
 
     // Message Settings
     var msgSettings = {
+        size: 1024,
         frequency: 500,
-        size: 1024
+        delay: 0
     }
 
     // Test Status
@@ -26,13 +27,15 @@
 
     $("#msgSize").val(msgSettings.size);
     $("#msgFreq").val(msgSettings.frequency);
+    $("#msgDelay").val(msgSettings.delay);
 
     function start() {
         if (!testing) {
             testing = true;
 
-            msgSettings.frequency = $("#msgFreq").val();
             msgSettings.size = parseInt($("#msgSize").val());
+            msgSettings.frequency = $("#msgFreq").val();
+            msgSettings.delay = $("#msgDelay").val();
 
             testStatus.msgRxCount = 0;
             testStatus.msgTxCount = 0;
@@ -41,7 +44,9 @@
             refreshTestStatusView();
 
             // establish websocket connection
-            var url = baseUrl;
+            var url = baseUrl + "?delay=" + msgSettings.delay;
+            console.log(url);
+
             webSocket = new WebSocket(url);
             webSocket.onopen = function () {
                 // start sending messages as the websocket connection is open
