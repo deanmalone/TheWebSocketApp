@@ -19,8 +19,13 @@
         msgRxCount: 0,
         msgTxCount: 0,
         charRxCount: 0,
-        charTxCount: 0
+        charTxCount: 0,
+        minResponseTime: Number.MAX_SAFE_INTEGER,
+        maxResponseTime: Number.MIN_SAFE_INTEGER,
+        avgResponseTime: 0
     }
+
+    var msgs = {};
 
     $("#btnStart").on("click", start);
     $("#btnStop").on("click", stop);
@@ -41,6 +46,9 @@
             testStatus.msgTxCount = 0;
             testStatus.charRxCount = 0;
             testStatus.charTxCount = 0;
+            testStatus.minResponseTime = Number.MAX_SAFE_INTEGER;
+            testStatus.maxResponseTime = Number.MIN_SAFE_INTEGER;
+            testStatus.avgResponseTime = 0;
             refreshTestStatusView();
 
             // establish websocket connection
@@ -57,8 +65,16 @@
 
             webSocket.onmessage = function (event) {
                 var msg = JSON.parse(event.data);
+                var responseTime = Date.now() - msgs[msg.id];
+                delete msgs[msg.id];
+
+                // update Rx stats, including avg, max, min response times
                 testStatus.msgRxCount++;
                 testStatus.charRxCount += event.data.toString().length;
+                testStatus.avgResponseTime = ((testStatus.avgResponseTime * testStatus.msgRxCount) + responseTime) / (testStatus.msgRxCount + 1);
+                if (responseTime > testStatus.maxResponseTime) testStatus.maxResponseTime = responseTime;
+                if (responseTime < testStatus.minResponseTime) testStatus.minResponseTime = responseTime;
+
                 refreshTestStatusView();
             }
 
@@ -100,6 +116,9 @@
             date: Date.now()
         };
 
+        // store date
+        msgs[msgId] = msg.date;
+
         // send message to server
         var msgString = JSON.stringify(msg)
         webSocket.send(msgString);
@@ -116,5 +135,8 @@
         $("#msgTx").text(testStatus.msgTxCount);
         $("#charRx").text(testStatus.charRxCount);
         $("#charTx").text(testStatus.charTxCount);
+        $("#avg").text(testStatus.avgResponseTime.toFixed(1));
+        if (testStatus.minResponseTime != Number.MAX_SAFE_INTEGER) $("#min").text(testStatus.minResponseTime); 
+        if (testStatus.maxResponseTime != Number.MIN_SAFE_INTEGER) $("#max").text(testStatus.maxResponseTime);
     }
 });
