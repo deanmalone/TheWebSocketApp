@@ -7,7 +7,7 @@ namespace TheWebSocketApp.Models
 {
     public class AppMessage
     {
-        public string id { get; set; }
+        public int id { get; set; }
         public string type { get; set; }
         public string content { get; set; }
         public string date { get; set; }
